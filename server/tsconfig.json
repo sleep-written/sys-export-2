@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "es2025",
+        "module": "node20",
+        "moduleResolution": "node16",
+
+        "strict": true,
+        "sourceMap": true,
+        "verbatimModuleSyntax": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+
+        "types": [ "node", "express" ],
+        "outDir": "./dist",
+        "rootDir": "./src",
+    }
+}
