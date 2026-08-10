@@ -27,6 +27,13 @@ export class Env {
         }
     }
 
+    get<D extends string | undefined>(
+        name: string,
+        options?: {
+            default?: D;
+        }
+    ): D extends string ? string : string | undefined;
+
     get<T, D extends T | undefined>(
         name: string,
         options?: {

@@ -1,12 +1,11 @@
 import { DataSource } from 'typeorm';
 import { resolve } from 'node:path';
-import { Env } from '@utils/env';
+import { env } from '@/env.js';
 
-const env = new Env(resolve(import.meta.dirname, '../../../.env'));
 export const sysExportDataSource = new DataSource({
     type:       'mssql',
-    host:       env.get('SYS_EXPORT_2_SYS_EXPORT_HOST')  ?? '127.0.0.1',
-    port:       env.get('SYS_EXPORT_2_SYS_EXPORT_PORT',  { callback: v => parseInt(v) }) ?? 1433,
+    host:       env.get('SYS_EXPORT_2_SYS_EXPORT_HOST', { default: '127.0.0.1' }),
+    port:       env.get('SYS_EXPORT_2_SYS_EXPORT_PORT', { default: 1433 , callback: v => parseInt(v)}),
     username:   env.get('SYS_EXPORT_2_SYS_EXPORT_USERNAME'),
     password:   env.get('SYS_EXPORT_2_SYS_EXPORT_PASSWORD'),
     database:   env.get('SYS_EXPORT_2_SYS_EXPORT_DATABASE'),

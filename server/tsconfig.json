@@ -15,9 +15,10 @@
 
         "types": [ "node", "express" ],
         "paths": {
-            "@sys-export/*": [ "./src/sys-export/*" ],
-            "@innova/*":     [ "./src/innova/*" ],
-            "@utils/*":      [ "./src/utils/*/index.ts" ]
+            "@sys-export/*":    [ "./src/sys-export/*" ],
+            "@innova/*":        [ "./src/innova/*" ],
+            "@utils/*":         [ "./src/utils/*/index.ts" ],
+            "@/*":              [ "./src/*" ]
         }
     }
 }

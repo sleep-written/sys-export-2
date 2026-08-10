@@ -2,7 +2,9 @@
   "type": "module",
   "scripts": {
     "test": "node --import @bleed-believer/cli --test --",
-    "typeorm": "bleed start ./node_modules/typeorm/cli.js --"
+    "typeorm": "bleed start ./node_modules/typeorm/cli.js --",
+    "watch": "bleed start --watch ./src/index.ts --",
+    "start": "bleed start ./src/index.ts --"
   },
   "devDependencies": {
     "@bleed-believer/cli": "^1.1.0",
@@ -14,8 +16,12 @@
     "@bleed-believer/commander": "^2.1.1",
     "@bleed-believer/connect-sqlite3": "^0.1.0",
     "better-sqlite3": "^12.11.1",
+    "express": "^5.2.1",
     "express-session": "^1.19.0",
     "mssql": "^12.7.0",
     "typeorm": "^1.1.0"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true
   }
 }
