@@ -1,12 +1,19 @@
 import type { CommandTarget } from '@bleed-believer/commander';
 
+import { styleText } from 'node:util';
 import { Command } from '@bleed-believer/commander';
+import { resolve } from 'node:path';
+import { homedir } from 'node:os';
+import { mkdir } from 'node:fs/promises';
+
+import expressSession from 'express-session';
 import express from 'express';
 
 import { sysExportDataSource } from '@sys-export/data-source.js';
 import { endpointsRouter } from './endpoints/router.js';
-import { styleText } from 'node:util';
 import { env } from '@/env.js';
+import { SQLite3Store } from '@bleed-believer/connect-sqlite3';
+
 
 export const serverCommand = new Command({
     positionals: 'server',
@@ -22,12 +29,20 @@ export const serverCommand = new Command({
         }
     },
     callback: c => new class implements CommandTarget {
+        #xdgDataHome = resolve(homedir(), '.local/share/sys-export-2');
         #dataSource = [
             sysExportDataSource
         ];
 
         async onInit(): Promise<void> {
+            await mkdir(this.#xdgDataHome, { recursive: true });
             const app = express()
+                .use(expressSession({
+                    store:  new SQLite3Store(resolve(this.#xdgDataHome, 'SESSION.db')),
+                    secret: env.get('SYS_EXPORT_2_SESSION_SECRET', { default: 'sys-export-2-session' }),
+                    resave: true,
+                    saveUninitialized: false,
+                }))
                 .use(express.json())
                 .use(endpointsRouter);
 

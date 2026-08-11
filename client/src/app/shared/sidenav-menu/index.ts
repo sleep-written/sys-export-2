@@ -1,0 +1,1 @@
+export { SidenavMenu } from './sidenav-menu';

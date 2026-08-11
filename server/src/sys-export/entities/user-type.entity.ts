@@ -1,7 +1,8 @@
 import type { Relation } from 'typeorm';
 
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from './user.js';
+import { MenuPermission } from './menu-permission.entity.js';
+import { User } from './user.entity.js';
 
 @Entity({ name: 'UserType' })
 export class UserType extends BaseEntity {
@@ -17,6 +18,12 @@ export class UserType extends BaseEntity {
     @Column({ type: 'bit' })
     system!: boolean;
 
+    @Column({ type: 'bit' })
+    guest!: boolean;
+
     @OneToMany(_ => User, r => r.userType)
     users?: Relation<User[]>;
+
+    @OneToMany(_ => MenuPermission, r => r.userType)
+    menuPermissions?: Relation<MenuPermission[]>;
 }

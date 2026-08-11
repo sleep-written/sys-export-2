@@ -11,7 +11,7 @@ export const sysExportDataSource = new DataSource({
     database:   env.get('SYS_EXPORT_2_SYS_EXPORT_DATABASE'),
 
     entities: [
-        resolve(import.meta.dirname, 'entities/*.{ts,js}')
+        resolve(import.meta.dirname, 'entities/*.entity.{ts,js}')
     ],
 
     migrations: [

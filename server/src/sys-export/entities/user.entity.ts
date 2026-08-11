@@ -1,7 +1,7 @@
 import type { Relation } from 'typeorm';
 
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { UserType } from './user-type.js';
+import { UserType } from './user-type.entity.js';
 
 @Entity({ name: 'User' })
 export class User extends BaseEntity {

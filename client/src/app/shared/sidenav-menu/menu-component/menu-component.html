@@ -1,0 +1,39 @@
+@let menu = this.menu();
+@let opened = this.opened();
+
+<ng-template #headerTemplate>
+    <mat-icon>{{ menu.icon }}</mat-icon>
+    <span>{{ menu.text }}</span>
+</ng-template>
+
+<div class="header"
+[class.opened]="opened">
+    @if (typeof menu.path === 'string') {
+        <a class="content" [routerLink]="menu.path">
+            <ng-container [ngTemplateOutlet]="headerTemplate">
+            </ng-container>
+        </a>
+    } @else {
+        <div class="content">
+            <ng-container [ngTemplateOutlet]="headerTemplate">
+            </ng-container>
+        </div>
+    }
+
+    @if (menu.children.length > 0) {
+        <button mat-icon-button
+        class="mat-bg-primary"
+        (click)="this.opened.set(!opened)">
+            <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+    }
+</div>
+
+@if (menu.children.length > 0) {
+    <div class="children">
+        @for (child of menu.children; track child.id) {
+            <app-menu-component [menu]="child">
+            </app-menu-component>
+        }
+    </div>
+}
