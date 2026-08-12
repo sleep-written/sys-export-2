@@ -1,0 +1,15 @@
+$duration: 1000ms;
+
+@keyframes mat-icon-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+mat-icon[spin] {
+    animation: mat-icon-spin $duration linear infinite;
+}

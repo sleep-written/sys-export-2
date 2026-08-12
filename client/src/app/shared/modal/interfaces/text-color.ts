@@ -1,0 +1,1 @@
+export type TextColor = 'primary' | 'secondary' | 'tertiary' | 'error';

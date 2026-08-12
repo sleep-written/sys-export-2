@@ -1,0 +1,21 @@
+:host mat-dialog-content {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+
+    & > .icon {
+        width: 6rem;
+
+        $icon-size: 5rem;
+        mat-icon {
+            width: $icon-size;
+            height: $icon-size;
+            font-size: $icon-size;
+        }
+    }
+
+    & > markdown {
+        flex: 1;
+    }
+}

@@ -1,1 +1,9 @@
-<p>login works!</p>
+@if (this.gotoSignUp()) {
+    <app-sign-up
+    (signUpChange)="this.ngOnInit()">
+    </app-sign-up>
+} @else {
+    <app-sign-in
+    (signInChange)="this.gotoHome()">
+    </app-sign-in>
+}

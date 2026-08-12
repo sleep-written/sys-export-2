@@ -1,0 +1,9 @@
+@let user = this.user();
+
+@if (user) {
+    <button mat-flat-button
+    type="button">
+        <mat-icon>account_circle</mat-icon>
+        <span>{{ user.username }}</span>
+    </button>
+}

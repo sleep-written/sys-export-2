@@ -1,0 +1,11 @@
+:host mat-card {
+    width: calc(100dvw - 4rem);
+    max-width: 480px;
+
+    [mat-card-content] {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+}

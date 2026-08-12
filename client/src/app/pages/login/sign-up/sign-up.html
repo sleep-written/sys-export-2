@@ -1,0 +1,58 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Sign Up</mat-card-title>
+    </mat-card-header>
+
+    <form mat-card-content
+    [formGroup]="this.form">
+        <mat-form-field>
+            <mat-label>Nombre de usuario</mat-label>
+            <input matInput
+            type="text"
+            formControlName="username"
+            [max]="24"
+            (input)="this.onUsernameInput($event)" />
+
+            <mat-hint>Requerido</mat-hint>
+            <mat-error>Min 4 caracteres</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Contraseña</mat-label>
+            <input matInput
+            type="password"
+            formControlName="password1"
+            [max]="32" />
+
+            <mat-hint>Requerido</mat-hint>
+            <mat-error>Min 8 caracteres</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Contraseña (repita)</mat-label>
+            <input matInput
+            type="password"
+            formControlName="password2"
+            [max]="32" />
+
+            <mat-hint>Requerido</mat-hint>
+            <mat-error>No coincide con la contraseña anterior</mat-error>
+        </mat-form-field>
+    </form>
+
+    <mat-card-actions>
+        <button mat-flat-button
+        class="mat-bg-primary mat-text-on-primary"
+        type="button"
+        [disabled]="this.form.pristine || this.form.invalid || this.loading()"
+        (click)="this.signUp()">
+            @if (this.loading()) {
+                <mat-icon spin>autorenew</mat-icon>
+            } @else {
+                <mat-icon>save</mat-icon>
+            }
+
+            <span>Crear cuenta</span>
+        </button>
+    </mat-card-actions>
+</mat-card>

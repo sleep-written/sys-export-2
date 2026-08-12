@@ -1,0 +1,22 @@
+<h3 mat-dialog-title>{{ this.data.title }}</h3>
+
+<mat-dialog-content>
+    <div class="icon mat-text-{{ this.data.color }}">
+        <mat-icon>{{ this.data.icon }}</mat-icon>
+    </div>
+
+    <markdown
+    [textContent]="this.data.message">
+    </markdown>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    @for (action of this.data.actions; track $index) {
+        <button mat-flat-button
+        class="mat-bg-{{ action.color }}"
+        (click)="this.close(action.value)">
+            <mat-icon>{{ action.icon }}</mat-icon>
+            <span>{{ action.text }}</span>
+        </button>
+    }
+</mat-dialog-actions>

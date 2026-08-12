@@ -11,16 +11,27 @@ class="mat-bg-primary">
     <a
     routerLink="/"
     class="mat-text-on-primary">SYS-EXPORT</a>
+
+    <div
+    [style.flex]="1">
+    </div>
+
+    <app-account #appAccount>
+    </app-account>
 </mat-toolbar>
 
 <mat-sidenav-container
 [hasBackdrop]="true"
 (backdropClick)="this.openedSidenav.set(false)">
     <mat-sidenav
-    class="mat-bg-surface-container-lowest mat-text-on-surface-variant"
-    [mode]="'side'"
+    [mode]="'over'"
+    [class]="[ 'mat-bg-surface-container-lowest', 'mat-text-on-surface-variant' ]"
     [opened]="opened">
-        <app-sidenav-menu>
+        <app-sidenav-menu
+        (navigationChange)="
+            this.openedSidenav.set(false);
+            appAccount.ngOnInit();
+        ">
         </app-sidenav-menu>
     </mat-sidenav>
 
