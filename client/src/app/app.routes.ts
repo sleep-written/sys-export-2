@@ -12,5 +12,9 @@ export const routes: Routes = [
     {
         path: 'logout',
         loadComponent: () => import('./pages/logout').then(x => x.Logout)
+    },
+    {
+        path: '**',
+        loadComponent: () => import('./pages/not-found').then(x => x.NotFound)
     }
 ];
