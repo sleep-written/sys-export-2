@@ -1,6 +1,7 @@
 import { Auditor } from 'audit-var';
 import { Router } from 'express';
-import { verify } from 'argon2';
+import { hash, verify } from 'argon2';
+import { rateLimit } from 'express-rate-limit';
 
 import { sysExportDataSource } from '@sys-export/data-source.js';
 import { EndpointError } from '@/server/endpoint-error.js';
@@ -14,14 +15,32 @@ const auditor = new Auditor({
     }
 });
 
-export const signInEndpoint = Router().post('', async (req, res) => {
+// Hash "de relleno" para verificar contra él cuando el usuario no existe, así
+// verify() siempre corre y el tiempo de respuesta no delata usuarios válidos.
+const dummyHash = await hash('sys-export-2-dummy-password', { hashLength: 32 });
+
+// Limita los intentos de login por IP para frenar fuerza bruta / credential stuffing.
+const signInLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+export const signInEndpoint = Router().post('', signInLimiter, async (req, res) => {
     try {
         await sysExportDataSource.transaction('SERIALIZABLE', async m => {
             const { username, password } = auditor.audit(req.body);
             const user = await m.findOneBy(User, { username });
-            if (!user || !await verify(user.password, password)) {
+            const valid = await verify(user?.password ?? dummyHash, password);
+
+            if (!user || !valid) {
                 throw new EndpointError(404, 'Usuario o contraseña inválida');
             }
+
+            await new Promise<void>((resolve, reject) => {
+                req.session.regenerate(err => err ? reject(err) : resolve());
+            });
 
             req.session.userId = user.id;
             req.session.save();

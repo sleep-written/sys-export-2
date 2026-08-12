@@ -6,5 +6,4 @@ const path = resolve(
     '../../.env'
 );
 
-console.log(path);
 export const env = new Env(path);

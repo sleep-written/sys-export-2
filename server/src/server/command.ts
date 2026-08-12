@@ -1,5 +1,6 @@
 import type { CommandTarget } from '@bleed-believer/commander';
 
+import { SQLite3Store } from '@bleed-believer/connect-sqlite3';
 import { styleText } from 'node:util';
 import { Command } from '@bleed-believer/commander';
 import { resolve } from 'node:path';
@@ -12,7 +13,6 @@ import express from 'express';
 import { sysExportDataSource } from '@sys-export/data-source.js';
 import { endpointsRouter } from './endpoints/router.js';
 import { env } from '@/env.js';
-import { SQLite3Store } from '@bleed-believer/connect-sqlite3';
 
 
 export const serverCommand = new Command({
@@ -39,9 +39,12 @@ export const serverCommand = new Command({
             const app = express()
                 .use(expressSession({
                     store:  new SQLite3Store(resolve(this.#xdgDataHome, 'SESSION.db')),
-                    secret: env.get('SYS_EXPORT_2_SESSION_SECRET', { default: 'sys-export-2-session' }),
+                    secret: env.get('SYS_EXPORT_2_SESSION_SECRET'),
                     resave: true,
                     saveUninitialized: false,
+                    cookie: {
+                        sameSite: 'lax',
+                    },
                 }))
                 .use(express.json())
                 .use(endpointsRouter);

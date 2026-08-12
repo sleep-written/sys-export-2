@@ -1,7 +1,7 @@
 import { EndpointError } from '@/server/endpoint-error.js';
 import { Router } from 'express';
 
-export const signOutEndpoint = Router().get('', async (req, res) => {
+export const signOutEndpoint = Router().post('', async (req, res) => {
     try {
         delete req.session.userId;
         req.session.save();

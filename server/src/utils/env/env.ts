@@ -27,27 +27,13 @@ export class Env {
         }
     }
 
-    get<D extends string | undefined>(
+    get<T = string>(
         name: string,
         options?: {
-            default?: D;
-        }
-    ): D extends string ? string : string | undefined;
-
-    get<T, D extends T | undefined>(
-        name: string,
-        options?: {
-            default?: D;
+            default?: T;
             callback?: (v: string) => T
         }
-    ): D extends T ? T : T | undefined;
-    get(
-        name: string,
-        options?: {
-            default?: boolean;
-            callback?: (v: string) => unknown
-        }
-    ): unknown {
+    ): T {
         const value = this.#getValue(name);
         if (typeof value !== 'string') {
             if (typeof options?.default === 'undefined') {
@@ -59,6 +45,6 @@ export class Env {
 
         return options?.callback
         ?   options?.callback(value)
-        :   value;
+        :   value as T;
     }
 }

@@ -7,7 +7,7 @@ export class LogoutService {
     #http = inject(HttpClient);
 
     logout(): Promise<void> {
-        const o = this.#http.get<void>('api/sign-out');
+        const o = this.#http.post<void>('api/sign-out', undefined);
         return firstValueFrom(o);
     }
 }
