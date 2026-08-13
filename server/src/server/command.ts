@@ -36,7 +36,13 @@ export const serverCommand = new Command({
 
         async onInit(): Promise<void> {
             await mkdir(this.#xdgDataHome, { recursive: true });
-            const app = express()
+            const app = express();
+            // Confía únicamente en el primer salto (el reverse proxy inmediato, ej. nginx),
+            // para que express-rate-limit identifique la IP real del cliente vía
+            // X-Forwarded-For sin permitir que un cliente falsifique saltos adicionales.
+            app.set('trust proxy', 1);
+
+            app
                 .use(expressSession({
                     store:  new SQLite3Store(resolve(this.#xdgDataHome, 'SESSION.db')),
                     secret: env.get('SYS_EXPORT_2_SESSION_SECRET'),

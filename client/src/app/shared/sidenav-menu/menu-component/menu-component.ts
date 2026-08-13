@@ -1,4 +1,4 @@
-import { Component, input, model } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { Menu } from './menu';
 
 import { NgTemplateOutlet } from '@angular/common';
@@ -18,6 +18,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './menu-component.scss',
 })
 export class MenuComponent {
-  opened = model(true);
+  openedChildren = signal(true);
+  opened = input(true);
   menu = input.required<Menu>();
 }

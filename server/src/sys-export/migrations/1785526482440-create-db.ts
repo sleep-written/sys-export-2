@@ -1,9 +1,10 @@
-import { UserType } from '@sys-export/entities/user-type.entity.js';
 import type { DeepPartial, EntityTarget, MigrationInterface, QueryRunner } from 'typeorm';
+
+import { UserType } from '@sys-export/entities/user-type.entity.js';
 
 export class CreateDb1785526482440 implements MigrationInterface {
     name = 'CreateDb1785526482440';
-    
+
     async #createAndSave<T>(
         { manager }: QueryRunner,
         target: EntityTarget<T>,
@@ -37,7 +38,7 @@ export class CreateDb1785526482440 implements MigrationInterface {
                 PRIMARY KEY     ("id")
             )`
         );
-        
+
         await queryRunner.query(
             `--sql
             ALTER TABLE "User" ADD
@@ -54,7 +55,14 @@ export class CreateDb1785526482440 implements MigrationInterface {
             system: true,
             description: 'Usuario con los permisos máximos del sistema'
         });
-        
+
+        await this.#createAndSave(queryRunner, UserType, {
+            code: 'COMEX',
+            guest: false,
+            system: false,
+            description: 'Usuario pertenenciente al área de comercio exterior'
+        });
+
         await this.#createAndSave(queryRunner, UserType, {
             code: 'GUEST',
             guest: true,
@@ -68,5 +76,4 @@ export class CreateDb1785526482440 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "UserType"`);
         await queryRunner.query(`DROP TABLE "User"`);
     }
-
 }

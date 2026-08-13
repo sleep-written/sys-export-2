@@ -1,7 +1,7 @@
 import { Router } from 'express';
+import { IsNull } from 'typeorm';
 
 import { UserType } from '@sys-export/entities/user-type.entity.js';
-import { IsNull } from 'typeorm';
 import { Menu } from '@sys-export/entities/menu.entity.js';
 
 async function getDescendants(userType: UserType, menu?: Menu): Promise<Menu[]> {
@@ -22,9 +22,13 @@ async function getDescendants(userType: UserType, menu?: Menu): Promise<Menu[]> 
 }
 
 export const menuEndpoint = Router().get('', async (req, res) => {
-    const userType = typeof req.session.userId === 'number'
+    let userType = typeof req.session.userId === 'number'
     ?   await UserType.findOneByOrFail({ users: { id: req.session.userId } })
-    :   await UserType.findOneByOrFail({ guest: true });
+    :   undefined;
+
+    if (!userType) {
+        userType = await UserType.findOneByOrFail({ guest: true });
+    }
 
     const json = await getDescendants(userType);
     res.json(json);

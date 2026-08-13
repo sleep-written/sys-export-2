@@ -1,5 +1,6 @@
-@let menu = this.menu();
+@let openedChildren = this.openedChildren();
 @let opened = this.opened();
+@let menu = this.menu();
 
 <ng-template #headerTemplate>
     <mat-icon>{{ menu.icon }}</mat-icon>
@@ -22,9 +23,13 @@
 
     @if (menu.children.length > 0) {
         <button mat-icon-button
-        class="mat-bg-primary"
-        (click)="this.opened.set(!opened)">
-            <mat-icon>arrow_drop_down</mat-icon>
+        class="mat-text-primary"
+        (click)="this.openedChildren.set(!openedChildren)">
+            @if (openedChildren) {
+                <mat-icon>collapse_all</mat-icon>
+            } @else {
+                <mat-icon>expand_all</mat-icon>
+            }
         </button>
     }
 </div>
@@ -32,7 +37,9 @@
 @if (menu.children.length > 0) {
     <div class="children">
         @for (child of menu.children; track child.id) {
-            <app-menu-component [menu]="child">
+            <app-menu-component
+            [opened]="openedChildren"
+            [menu]="child">
             </app-menu-component>
         }
     </div>

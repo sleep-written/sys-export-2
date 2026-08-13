@@ -5,7 +5,7 @@ import { Router } from 'express';
 export const meEndpoint = Router().get('', async (req, res) => {
     try {
         const me = typeof req.session.userId === 'number'
-        ?   await User.findOneOrFail({
+        ?   await User.findOne({
                 where:      { id: req.session.userId },
                 relations:  { userType: true }
             })

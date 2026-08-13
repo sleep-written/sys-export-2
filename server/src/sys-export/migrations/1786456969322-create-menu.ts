@@ -1,20 +1,10 @@
-import type { DeepPartial, EntityTarget, MigrationInterface, QueryRunner } from 'typeorm';
+import type { MigrationInterface, QueryRunner } from 'typeorm';
 
-import { MenuPermission } from '@sys-export/entities/menu-permission.entity.js';
 import { UserType } from '@sys-export/entities/user-type.entity.js';
 import { Menu } from '@sys-export/entities/menu.entity.js';
 
 export class CreateMenu1786456969322 implements MigrationInterface {
     name = 'CreateMenu1786456969322';
-
-    async #createAndSave<T>(
-        { manager }: QueryRunner,
-        target: EntityTarget<T>,
-        data: DeepPartial<T>
-    ): Promise<T> {
-        const item = manager.create(target, data);
-        return manager.save(item);
-    }
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "Menu" ("id" int NOT NULL IDENTITY(1,1), "icon" varchar(64) NOT NULL, "text" nvarchar(128) NOT NULL, "path" varchar(512), "parentId" int, CONSTRAINT "PK_b2683c330c5e6d700266a6f46d0" PRIMARY KEY ("id"))`);
@@ -23,28 +13,38 @@ export class CreateMenu1786456969322 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "MenuPermission" ADD CONSTRAINT "FK_88aa6689e7eaba9af95a7fe0982" FOREIGN KEY ("menuId") REFERENCES "Menu"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "MenuPermission" ADD CONSTRAINT "FK_f8169311232c380f2f2431c899c" FOREIGN KEY ("userTypeId") REFERENCES "UserType"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
 
-        const systemType = await queryRunner.manager.findOneByOrFail(UserType, {
-            code: 'SYSTEM'
+        const systemType = await queryRunner.manager.findOneByOrFail(UserType,  { code: 'SYSTEM' });
+        const comexType =  await queryRunner.manager.findOneByOrFail(UserType,  { code: 'COMEX' });
+        const guestType =  await queryRunner.manager.findOneByOrFail(UserType,  { code: 'GUEST' });
+
+        await Menu.generate(queryRunner.manager, {
+            icon: 'folder',
+            text: 'Documentos',
+            path: null,
+            userTypes: [ systemType, comexType ],
+            children: [
+                {
+                    icon: 'assignment',
+                    text: 'Cotización',
+                    path: '/documentos/cotizacion',
+                    userTypes: [ systemType, comexType ]
+                }
+            ]
         });
 
-        const guestType = await queryRunner.manager.findOneByOrFail(UserType, {
-            code: 'GUEST'
-        });
-
-        const loginMenu = await this.#createAndSave(queryRunner, Menu, {
+        await Menu.generate(queryRunner.manager, {
             icon: 'login',
             text: 'Iniciar sesión',
-            path: '/login'
+            path: '/login',
+            userTypes: [ guestType ]
         });
 
-        const logoutMenu = await this.#createAndSave(queryRunner, Menu, {
+        await Menu.generate(queryRunner.manager, {
             icon: 'logout',
             text: 'Cerrar sesión',
-            path: '/logout'
+            path: '/logout',
+            userTypes: [ systemType, comexType ]
         });
-
-        await this.#createAndSave(queryRunner, MenuPermission, { menu: loginMenu,   userType: guestType });
-        await this.#createAndSave(queryRunner, MenuPermission, { menu: logoutMenu,  userType: systemType });
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
@@ -54,5 +54,4 @@ export class CreateMenu1786456969322 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "MenuPermission"`);
         await queryRunner.query(`DROP TABLE "Menu"`);
     }
-
 }
